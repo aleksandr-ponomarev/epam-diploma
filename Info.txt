@@ -13,13 +13,6 @@ CREATE index ON quotes using btree (Date, Name, ValuteId);
 ALTER TABLE quotes ADD CONSTRAINT quotes_const UNIQUE (Date, ValuteId);
 
 
-dotnet ef dbcontext scaffold "Host=10.85.85.93;Database=exchange;Username=postgres;Password=;CommandTimeout=3600" Npgsql.EntityFrameworkCore.PostgreSQL -o Models
-
-
-SELECT * FROM tradehistory order by id desc limit 10;
-
-
-
 docker build -t api:test .
 docker run -d --name apiTest \
 -e "SQL_CONN_STRING=Host=10.85.85.93;Database=exchange;Username=postgres;Password=;CommandTimeout=3600" \
