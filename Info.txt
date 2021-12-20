@@ -1,0 +1,32 @@
+CREATE TABLE quotes (
+id        BIGSERIAL   PRIMARY KEY,
+Date      TIMESTAMP NOT NULL,
+Name      TEXT        NOT NULL,
+ValuteId  TEXT        NOT NULL,
+NumCode   INTEGER     NOT NULL,
+CharCode  TEXT        NOT NULL,
+Nominal   INTEGER     NOT NULL,
+Value     DECIMAL     NOT NULL
+);
+
+CREATE index ON quotes using btree (Date, Name, ValuteId);
+ALTER TABLE quotes ADD CONSTRAINT quotes_const UNIQUE (Date, ValuteId);
+
+
+dotnet ef dbcontext scaffold "Host=10.85.85.93;Database=exchange;Username=postgres;Password=;CommandTimeout=3600" Npgsql.EntityFrameworkCore.PostgreSQL -o Models
+
+
+SELECT * FROM tradehistory order by id desc limit 10;
+
+
+
+docker build -t api:test .
+docker run -d --name apiTest \
+-e "SQL_CONN_STRING=Host=10.85.85.93;Database=exchange;Username=postgres;Password=;CommandTimeout=3600" \
+-e "EXCHANGE_API_ADDRESS=https://www.cbr.ru/scripts/XML_daily_eng.asp" \
+-p 5000:5000 \
+api:test
+
+
+docker build --build-arg API_ADDRESS=10.0.98.53:5000 -t web:test .
+docker run --name testweb -p 8080:80 web:test

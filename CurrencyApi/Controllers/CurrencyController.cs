@@ -11,7 +11,7 @@ using System.Xml;
 
 namespace CurrencyApi.Controllers
 {
-    [Route("/api/v1/quotes")]
+    [Route("currencyapi/api/v1/quotes")]
     [ApiController]
     public class CurrencyController : ControllerBase
     {
@@ -26,8 +26,8 @@ namespace CurrencyApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetQuotes([FromQuery] string startDate, string endDate, string valuteId, int page, int pageSize)
         {
-            var stDate = string.IsNullOrEmpty(startDate) ? new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) : Convert.ToDateTime(startDate);
-            var enDate = string.IsNullOrEmpty(endDate) ? DateTime.Now : Convert.ToDateTime(endDate);
+            var stDate = string.IsNullOrEmpty(startDate) ? new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) : DateTime.ParseExact(startDate, "dd.MM.yyyy", null);
+            var enDate = string.IsNullOrEmpty(endDate) ? DateTime.Now : DateTime.ParseExact(endDate, "dd.MM.yyyy", null);
             var db = new DatabaseOperator();
             var qoutes = await db.GetQuotes(stDate, enDate, valuteId, page, pageSize);
 

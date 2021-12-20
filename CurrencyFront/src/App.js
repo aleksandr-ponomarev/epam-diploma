@@ -34,7 +34,6 @@ const columns = [
 ];
 
 function App() {
-
   const [list, setList] = useState([]);
   const [id, setId] = useState("");
   const [start, setStart] = useState("");
@@ -42,33 +41,33 @@ function App() {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(1);
 
-  const apiAddress = `http://localhost:5000/api/v1/quotes`;
+  const { REACT_APP_API_ADDRESS } = process.env
+  const apiRequest = `http://${REACT_APP_API_ADDRESS}/currencyapi/api/v1/quotes`;
 
   const loadData = (item) => {
-    fetch(`${apiAddress}?startDate=${start}&endDate=${end}&valuteId=${id}&page=${item.page}&pageSize=${item.numberPerPage}`)
+    fetch(`${apiRequest}?startDate=${start}&endDate=${end}&valuteId=${id}&page=${item.page}&pageSize=${item.numberPerPage}`)
       .then((response) => response.json())
       .then((json) => setList(json));
-      setPage(item.page);
-      setSize(item.numberPerPage);
-      debugger;
+    setPage(item.page);
+    setSize(item.numberPerPage);
   };
 
   const handleSubmit = (item) => {
     item.preventDefault();
-   setId(item.target.valuteid.value);
-   setStart(item.target.startdate.value);
-   setEnd(item.target.enddate.value);
-   fetch(`${apiAddress}?startDate=${item.target.startdate.value}&endDate=${item.target.enddate.value}&valuteId=${item.target.valuteid.value}&page=${page}&pageSize=${size}`)
-    .then((response) => response.json())
-    .then((json) => setList(json));
+    fetch(`${apiRequest}?startDate=${item.target.startdate.value}&endDate=${item.target.enddate.value}&valuteId=${item.target.valuteid.value}&page=${page}&pageSize=${size}`)
+      .then((response) => response.json())
+      .then((json) => setList(json));
+     setId(item.target.valuteid.value);
+     setStart(item.target.startdate.value);
+     setEnd(item.target.enddate.value);
  }
 
- function reloadDb() {
-  fetch(`${apiAddress}`, { method: 'POST'});
+  function reloadDb() {
+    fetch(`${apiRequest}`, { method: 'POST'});
 }
 
-function flushDb() {
-  fetch(`${apiAddress}`, { method: 'DELETE'});
+  function flushDb() {
+    fetch(`${apiRequest}`, { method: 'DELETE'});
 }
 
   return(
