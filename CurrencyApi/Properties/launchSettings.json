@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "CurrencyApi": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "SQL_CONN_STRING": "Host=10.85.85.93;Database=exchange;Username=postgres;Password=password;CommandTimeout=3600",
+        "EXCHANGE_API_ADDRESS": "https://www.cbr.ru/scripts/XML_daily_eng.asp"
+      },
+      "dotnetRunMessages": "true",
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+    }
+  }
+}

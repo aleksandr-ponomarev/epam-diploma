@@ -1,0 +1,19 @@
+CREATE TABLE quotes (
+id        BIGSERIAL   PRIMARY KEY,
+Date      TIMESTAMP NOT NULL,
+Name      TEXT        NOT NULL,
+ValuteId  TEXT        NOT NULL,
+NumCode   INTEGER     NOT NULL,
+CharCode  TEXT        NOT NULL,
+Nominal   INTEGER     NOT NULL,
+Value     NUMERIC     NOT NULL
+);
+
+CREATE index ON quotes using btree (Date, Name, ValuteId);
+ALTER TABLE quotes ADD CONSTRAINT quotes_const UNIQUE (Date, ValuteId);
+
+
+dotnet ef dbcontext scaffold "Host=10.85.85.93;Database=exchange;Username=postgres;Password=password;CommandTimeout=3600" Npgsql.EntityFrameworkCore.PostgreSQL -o Models
+
+
+SELECT * FROM tradehistory order by id desc limit 10;
