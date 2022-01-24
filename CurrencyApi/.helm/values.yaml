@@ -1,0 +1,25 @@
+# Default values for test.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+appname: currencyapi
+
+app:
+  contour: "no_contour_assigned"
+  port: "5000"
+
+replicaCount: 1
+
+image:
+  repository: badman02/currencyapi
+  tag: "no_tag_assigned"
+
+autoscaler:
+  minReplicas: 1
+  maxReplicas: 3
+  averageUtilization: 85
+
+service:
+  type: ClusterIP
+  port: 80
+  localport: 5000

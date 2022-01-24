@@ -81,11 +81,11 @@ function App() {
       <form onSubmit={handleSubmit}>
         <fieldset>
           <label>
-            <p>StartDate</p>
+            <p>StartDate(dd.mm.yyyy)</p>
             <input name="startdate"/>
           </label>
           <label>
-            <p>EndDate</p>
+            <p>EndDate(dd.mm.yyyy)</p>
             <input name="enddate"/>
           </label>
           <label>

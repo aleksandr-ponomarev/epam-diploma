@@ -1,5 +1,7 @@
 FROM node:16.13.1-stretch as build
 
+ARG API_ADDRESS
+
 WORKDIR /usr/app
 
 # Copy packege dependency file and install npm packages. This step to cache "npm install" stage.
@@ -7,6 +9,7 @@ COPY package.json package-lock.json ./
 RUN npm i
 
 # Copy rest of source files and build main app.
+ENV REACT_APP_API_ADDRESS=$API_ADDRESS
 COPY . .
 RUN npm run build
 

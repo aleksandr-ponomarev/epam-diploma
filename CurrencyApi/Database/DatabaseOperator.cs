@@ -1,5 +1,5 @@
 ﻿using CurrencyApi.DBModels;
-using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,13 +11,14 @@ namespace CurrencyApi.Database
     public class DatabaseOperator
     {
         private exchangeContext _db;
+        private readonly string _sqlConnString;
+        private readonly ILogger _logger;
         private int _counter;
-        private ILogger _logger;
 
         public DatabaseOperator()
         {
-            var connSting = Environment.GetEnvironmentVariable("SQL_CONN_STRING");
-            _db = new exchangeContext(connSting);
+            _sqlConnString = Environment.GetEnvironmentVariable("SQL_CONN_STRING");
+            _db = new exchangeContext(_sqlConnString);
             _counter = 0;
 
             _logger = LoggerFactory.Create(o => o.AddSimpleConsole(options =>
@@ -63,6 +64,41 @@ namespace CurrencyApi.Database
             await _db.SaveChangesAsync();
 
             _logger.LogInformation($"Table cleared.");
+        }
+
+        public async Task InitDB()
+        {
+            using var psgConn = new NpgsqlConnection(_sqlConnString);
+            await psgConn.OpenAsync();
+
+            var createTableCmd = new NpgsqlCommand(
+               $"CREATE TABLE IF NOT EXISTS quotes(" +
+                "id        BIGSERIAL   PRIMARY KEY, " +
+                "Date      TIMESTAMP   NOT NULL, " +
+                "Name      TEXT        NOT NULL, " +
+                "ValuteId  TEXT        NOT NULL, " +
+                "NumCode   INTEGER     NOT NULL, " +
+                "CharCode  TEXT        NOT NULL, " +
+                "Nominal   INTEGER     NOT NULL, " +
+                "Value     NUMERIC     NOT NULL)"
+               , psgConn);
+            var createNewIndexCmd = new NpgsqlCommand($"CREATE INDEX IF NOT EXISTS quotes_index ON quotes using btree (Date, Name, ValuteId)", psgConn);
+            var createNewConstraintCmd = new NpgsqlCommand($"ALTER TABLE quotes ADD CONSTRAINT quotes_const UNIQUE (Date, ValuteId)", psgConn);
+
+            try
+            {
+                await createTableCmd.ExecuteNonQueryAsync();
+                await createNewIndexCmd.ExecuteNonQueryAsync();
+                await createNewConstraintCmd.ExecuteNonQueryAsync();
+
+                _logger.LogInformation("New table created.");
+            }
+            catch
+            {
+                _logger.LogInformation("Table existed. Skipping.");
+            }
+
+            await psgConn.CloseAsync();
         }
     }
 }

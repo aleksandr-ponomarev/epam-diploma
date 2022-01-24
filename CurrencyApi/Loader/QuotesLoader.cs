@@ -41,7 +41,7 @@ namespace CurrencyApi.Loader
 
         private async Task GetDailyQuotes(DateTime date)
         {
-            var m_strFilePath = $"{_exchangeApiAddress}?date_req={date:dd'/'M'/'yyyy}";
+            var m_strFilePath = $"{_exchangeApiAddress}?date_req={date:dd'/'MM'/'yyyy}";
 
             string xmlStr;
             using (var wc = new WebClient())

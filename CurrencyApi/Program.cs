@@ -1,10 +1,7 @@
+using CurrencyApi.Database;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CurrencyApi
@@ -13,6 +10,8 @@ namespace CurrencyApi
     {
         public static async Task Main(string[] args)
         {
+            var db = new DatabaseOperator();
+            await db.InitDB();
             CreateHostBuilder(args).Build().Run();
         }
 

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appname }}
+  labels:
+    app: {{ .Values.appname }}
+spec:
+  replicas: {{ .Values.ReplicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appname }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appname }}
+      annotations:
+        commitsha: "{{ .Values.commitSha }}"
+    spec:
+      containers:
+      - name: {{ .Values.appname }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 200m
+            memory: 200Mi
+          limits:
+            cpu: 1000m
+            memory: 1000Mi
+        env:
+        - name: SQL_CONN_STRING
+          valueFrom:
+            secretKeyRef:
+              name: psql-conn-string
+              key: psqlConnString
+        - name: EXCHANGE_API_ADDRESS
+          value: {{ .Values.app.exchangApiAddress }}
